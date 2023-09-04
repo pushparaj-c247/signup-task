@@ -18,7 +18,7 @@ const signUpUserController = async (
             service: "Gmail",
             auth: {
                 user: "pushparaj.m@chapter247.com",
-                pass: "gOLU@8120@",
+                pass: "",
             },
         });
 
