@@ -27,7 +27,7 @@ const userController_1 = require("../controller/userController");
 const express_1 = require("express");
 const expressValidator = __importStar(require("../middleware/expressValidator"));
 const routers = (0, express_1.Router)();
-routers.post("/signUpUser", userController_1.signUpUserController);
+routers.post("/signUpUser", expressValidator.validateSignupFields, userController_1.signUpUserController);
 routers.get("/verify", userController_1.verifyMail);
 routers.post("/login", [expressValidator.passwordValidation, expressValidator.emailValidation], userController_1.loginController);
 exports.default = routers;

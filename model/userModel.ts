@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 
 const UserSchema = new mongoose.Schema({
-
   name: {
     type: String,
     required: true,
@@ -33,7 +32,6 @@ UserSchema.pre("save", async function (next) {
   user.password = hash;
   next();
 });
-/* eslint-disable */
 UserSchema.pre("findOneAndUpdate", function (next) {
   const update: any = this.getUpdate();
 

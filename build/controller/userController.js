@@ -16,10 +16,26 @@ exports.loginController = exports.verifyMail = exports.signUpUserController = vo
 const userServices_1 = require("../services/userServices");
 const userModel_1 = __importDefault(require("../model/userModel"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const express_validator_1 = require("express-validator");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const signUpUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            const errors = (0, express_validator_1.validationResult)(req);
+            if (!errors.isEmpty()) {
+                const errorResponse = {};
+                for (const error of errors.array()) {
+                    const { path, msg } = error;
+                    errorResponse[path] = msg;
+                }
+                return res.status(400).json({ errors: errorResponse });
+            }
+            ;
+        }
         const signUp = yield (0, userServices_1.signUpUser)(req.body);
         const email = req.body.email;
+        // sending mail
         const transporter = nodemailer_1.default.createTransport({
             service: "Gmail",
             auth: {
@@ -27,11 +43,13 @@ const signUpUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 pass: "gOLU@8120@",
             },
         });
+        const token = jsonwebtoken_1.default.sign({ email: email }, 'secretkey', { expiresIn: '10m' });
+        console.log(token);
         const mailOptions = {
-            from: '"pushparaj 👻" <pushparaj.m@chapter247.com>',
+            from: '"pushparaj" <pushparaj.m@chapter247.com>',
             to: email,
-            subject: "For Verification✔",
-            html: '<p> Hii ,please click here to <a href="http://localhost:4000/verify?email=' + email + '">click on this to Verify </a> </p>'
+            subject: "For Verification ",
+            html: '<p> Hii ,please click here to Verify your Account ✅ <a href="http://localhost:4000/user/verify?token=' + token + '">click here to Verify </a> </p>'
         };
         transporter.sendMail(mailOptions, function (error, result) {
             if (error) {
@@ -48,15 +66,25 @@ const signUpUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.signUpUserController = signUpUserController;
+// // verify user afte get mail
 const verifyMail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield userModel_1.default.updateOne({ email: req.query.email }, {
-        $set: {
-            is_Verified: true
-        }
-    });
-    res.render("Verified");
+    try {
+        const tokens = req.query.token;
+        const decodedToken = jsonwebtoken_1.default.verify(tokens, 'secretkey');
+        const userEmail = decodedToken.email;
+        yield userModel_1.default.updateOne({ email: userEmail }, {
+            $set: {
+                is_Verified: true
+            }
+        });
+        res.render("Verified");
+    }
+    catch (error) {
+        res.status(401).json({ token: 'token Verification Failed' });
+    }
 });
 exports.verifyMail = verifyMail;
+// login user
 const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield (0, userServices_1.loginUser)(req, res);

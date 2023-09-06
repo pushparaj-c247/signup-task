@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.signUpUser = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const express_validator_1 = require("express-validator");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const signUpUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const create = yield userModel_1.default.create(obj);
     return create;
@@ -38,6 +39,9 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!passwordMatch) {
         return res.status(401).json({ message: "invalid password" });
     }
-    return res.json({ message: "logged in successfully" });
+    const token = jsonwebtoken_1.default.sign({ email: obj.email, name: obj.name }, "ABcdefg", {
+        expiresIn: "1h",
+    });
+    return res.json({ message: "logged in successfully", token });
 });
 exports.loginUser = loginUser;

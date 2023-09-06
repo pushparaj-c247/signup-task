@@ -44,7 +44,6 @@ UserSchema.pre("save", function (next) {
         next();
     });
 });
-/* eslint-disable */
 UserSchema.pre("findOneAndUpdate", function (next) {
     const update = this.getUpdate();
     if (update.password) {

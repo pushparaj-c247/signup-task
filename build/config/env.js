@@ -8,4 +8,5 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const DB_URL = (_a = process.env.DB_URL) !== null && _a !== void 0 ? _a : "";
 const port = 4000;
-exports.default = { DB_URL, port };
+const key = 'secretkey';
+exports.default = { DB_URL, port, key };
