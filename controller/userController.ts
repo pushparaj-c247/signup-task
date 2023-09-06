@@ -32,7 +32,7 @@ const signUpUserController = async (
             service: "Gmail",
             auth: {
                 user: "pushparaj.m@chapter247.com",
-                pass: "gOLU@8120@",
+                pass: "",
             },
         });
         const token = jwt.sign({ email: email }, 'secretkey', { expiresIn: '10m' });
