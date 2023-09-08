@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
+import {DB_URL} from "../config/env"
 dotenv.config();
 
 export function connections() {
   mongoose
-    .connect('mongodb://127.0.0.1:27017/SignUp')
+    .connect(DB_URL)
     .then(() => console.log("DB connected "))
     .catch(() => console.log("error in DB"));
 }

@@ -22,26 +22,31 @@ const signUpUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.signUpUser = signUpUser;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = (0, express_validator_1.validationResult)(req);
-    if (!result.isEmpty()) {
-        return res.send({ errors: result["errors"][0] });
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        const errorResponse = {};
+        for (const error of errors.array()) {
+            const { path, msg } = error;
+            errorResponse[path] = msg;
+        }
+        return res.status(400).json({ errors: errorResponse });
     }
     const { email, password } = req.body;
-    const obj = yield userModel_1.default.findOne({
+    const detail = yield userModel_1.default.findOne({
         email: email,
     });
-    if (!obj) {
+    if (!detail) {
         return res.status(401).json({
             message: "invalid username & password",
         });
     }
-    const passwordMatch = yield obj.validatePassword(password);
+    const passwordMatch = yield detail.validatePassword(password);
     if (!passwordMatch) {
         return res.status(401).json({ message: "invalid password" });
     }
-    const token = jsonwebtoken_1.default.sign({ email: obj.email, name: obj.name }, "ABcdefg", {
+    const token = jsonwebtoken_1.default.sign({ email: detail.email, name: detail.name }, "ABcdefg", {
         expiresIn: "1h",
     });
-    return res.json({ message: "logged in successfully", token });
+    return res.status(200).json({ message: "logged in successfully", token });
 });
 exports.loginUser = loginUser;

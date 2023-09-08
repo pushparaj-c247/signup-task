@@ -1,6 +1,6 @@
 import express from "express";
 import {connections} from "./config/db";
-import  port  from "./config/env";
+import { Port } from "./config/env";
 import routers from "./router/userRouter";
 
 // import main from './mailer/nodeMailer'
@@ -13,7 +13,7 @@ connections();
 
 app.use(`/user`, routers);
 app.set('view engine', 'ejs');
-app.listen(port, () => {
+app.listen(Port, () => {
     console.log("server is started");
   });
   

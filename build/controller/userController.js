@@ -15,9 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginController = exports.verifyMail = exports.signUpUserController = void 0;
 const userServices_1 = require("../services/userServices");
 const userModel_1 = __importDefault(require("../model/userModel"));
-const nodemailer_1 = __importDefault(require("nodemailer"));
 const express_validator_1 = require("express-validator");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const env_1 = require("../config/env");
+const transport_1 = __importDefault(require("../config/transport"));
 const signUpUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const errors = (0, express_validator_1.validationResult)(req);
@@ -31,35 +32,28 @@ const signUpUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 }
                 return res.status(400).json({ errors: errorResponse });
             }
-            ;
         }
         const signUp = yield (0, userServices_1.signUpUser)(req.body);
         const email = req.body.email;
         // sending mail
-        const transporter = nodemailer_1.default.createTransport({
-            service: "Gmail",
-            auth: {
-                user: "pushparaj.m@chapter247.com",
-                pass: "gOLU@8120@",
-            },
-        });
-        const token = jsonwebtoken_1.default.sign({ email: email }, 'secretkey', { expiresIn: '10m' });
+        const token = jsonwebtoken_1.default.sign({ email: email }, env_1.Key, { expiresIn: '10m' });
         console.log(token);
         const mailOptions = {
-            from: '"pushparaj" <pushparaj.m@chapter247.com>',
+            from: env_1.fromEmail,
             to: email,
-            subject: "For Verification ",
-            html: '<p> Hii ,please click here to Verify your Account ✅ <a href="http://localhost:4000/user/verify?token=' + token + '">click here to Verify </a> </p>'
+            subject: "For Verification",
+            html: '<p>Hii , Please click here to Verify your Account ✅ <a href="' + env_1.baseUrl + '/user/verify?token=' + token + '"> Click here to Verify </a> </p>'
         };
-        transporter.sendMail(mailOptions, function (error, result) {
+        transport_1.default.sendMail(mailOptions, function (error, result) {
             if (error) {
                 console.log(error);
             }
             else {
-                console.log("Email has been sent");
+                res.status(200);
+                console.log("Email Sent");
             }
         });
-        return res.send(signUp);
+        return res.send(signUp).status(200);
     }
     catch (error) {
         res.status(401).json(error);
@@ -68,9 +62,10 @@ const signUpUserController = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.signUpUserController = signUpUserController;
 // // verify user afte get mail
 const verifyMail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const tokens = req.query.token;
-        const decodedToken = jsonwebtoken_1.default.verify(tokens, 'secretkey');
+        const tokens = (_a = req.query.token) === null || _a === void 0 ? void 0 : _a.toString();
+        const decodedToken = jsonwebtoken_1.default.verify(tokens, env_1.Key);
         const userEmail = decodedToken.email;
         yield userModel_1.default.updateOne({ email: userEmail }, {
             $set: {
@@ -90,7 +85,7 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
         return yield (0, userServices_1.loginUser)(req, res);
     }
     catch (error) {
-        console.log("Error In LoginUser");
+        res.status(401).json("error in login User");
     }
 });
 exports.loginController = loginController;

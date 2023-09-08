@@ -1,33 +1,10 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const userController_1 = require("../controller/userController");
 const express_1 = require("express");
-const expressValidator = __importStar(require("../middleware/expressValidator"));
+const expressValidator_1 = require("../middleware/expressValidator");
 const routers = (0, express_1.Router)();
-routers.post("/signUpUser", expressValidator.validateSignupFields, userController_1.signUpUserController);
+routers.post("/signUpUser", expressValidator_1.validateSignupFields, userController_1.signUpUserController);
 routers.get("/verify", userController_1.verifyMail);
-routers.post("/login", [expressValidator.passwordValidation, expressValidator.emailValidation], userController_1.loginController);
+routers.post("/login", [expressValidator_1.passwordValidation, expressValidator_1.emailValidation], userController_1.loginController);
 exports.default = routers;

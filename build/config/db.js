@@ -6,10 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connections = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const env_1 = require("../config/env");
 dotenv_1.default.config();
 function connections() {
     mongoose_1.default
-        .connect('mongodb://127.0.0.1:27017/SignUp')
+        .connect(env_1.DB_URL)
         .then(() => console.log("DB connected "))
         .catch(() => console.log("error in DB"));
 }

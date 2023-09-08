@@ -5,7 +5,8 @@ interface obj {
   email: string,
   contactNumber: number,
   password: string,
-  is_Verified: Number
+  is_Verified: Number,
+  token: string
 }
 
 export default obj

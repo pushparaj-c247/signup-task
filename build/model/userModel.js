@@ -30,6 +30,9 @@ const UserSchema = new mongoose_1.default.Schema({
     is_Verified: {
         type: Boolean,
         default: false
+    },
+    token: {
+        type: String
     }
 });
 UserSchema.pre("save", function (next) {
