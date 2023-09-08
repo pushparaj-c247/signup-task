@@ -31,7 +31,18 @@ const signUpUserController = async (
  // sending mail
         
 
+<<<<<<< HEAD
         const token = jwt.sign({ email: email }, Key!, { expiresIn: '10m' });
+=======
+        const transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: "pushparaj.m@chapter247.com",
+                pass: "",
+            },
+        });
+        const token = jwt.sign({ email: email }, 'secretkey', { expiresIn: '10m' });
+>>>>>>> 032bf177911dcbd21634f4cac4cfb6d2d77bf267
         console.log(token)
 
         const mailOptions = {
